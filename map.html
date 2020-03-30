@@ -1,4 +1,4 @@
-<title>Neighborhood Walkabouts - Get GPS Coordinates</title>
+<title>Neighborhood Walkabouts - Map</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -18,30 +18,7 @@
     .navbutton {
         margin-right: 0.5vw;
     }
-    .controls {
-        margin-top: 0.75vw;
-        margin-left: 1vw;
-    }
-    button {
-        margin-right: 0.5vw;
-    }
 </style>
-<script>
-    function addNewToCookie() {
-        var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)coordinates\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-        navigator.geolocation.getCurrentPosition(function(position) {cookieValue += position.coords.latitude+","+position.coords.longitude+"_"; document.cookie="coordinates="+cookieValue});
-    }
-    function retrieveCoords() {
-        var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)coordinates\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-        cookieValue = cookieValue.replace(/_/g,"\n");
-        document.getElementById("coords").value = cookieValue;
-        setTimeout(retrieveCoords, 250);
-    }
-    function clearCoords() {
-        document.cookie = "coordinates=;"
-    }
-    $(document).ready(retrieveCoords);
-</script>
 <nav class="navbar navbar-expand-lg navbargrn navbar-light">
   <a class="navbar-brand" href="#">Neighborhood Walkabouts</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,22 +34,17 @@
         <a class="btn btn-outline-dark navbutton" href="/about.html">About & FAQ</a>
       </li>
       <li class="nav-item">
-        <a class="btn btn-outline-dark navbutton" href="/map.html">Map</a>
+        <a class="btn btn-outline-dark navbutton active" href="/map.html">Map</a>
       </li>
       <li class="nav-item">
         <a class="btn btn-outline-dark navbutton" href="/generator.html">Create A Walkabout</a>
       </li>
       <li class="nav-item">
-        <a class="btn btn-outline-dark navbutton active" href="/coordinates.html">Get GPS Coordinates</a>
+        <a class="btn btn-outline-dark navbutton" href="/coordinates.html">Get GPS Coordinates</a>
       </li>
     </ul>
   </div>
 </nav>
-<div class="controls">
-    <button type="button" class="btn btn-lg btn-primary" onclick="addNewToCookie()">Save Coordinates</button>
-    <button type="button" class="btn btn-lg btn-primary" onclick="clearCoords()">Clear Coordinates</button>
-    <textarea id="coords" cols="30" rows="15" readonly>
-
-    </textarea>
-    <p>This webpage stores a list of GPS coordinates which you can paste into the "Create a Walkabout" tab. Click "Save Coordinates" to save your current location. Please save your location at every photo and then you can copy/paste the coordinate list into the "Create a Walkabout" tab.</p>
+<div>
+<iframe id="map" src="https://www.google.com/maps/d/embed?mid=1-urwXnlxWYZ_vJIaeqbHCAzKDjmujx-3" width="100%" height="90%" style="border: none"></iframe>
 </div>
