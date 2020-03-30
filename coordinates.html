@@ -1,4 +1,4 @@
-<title>Neighborhood Walkabouts</title>
+<title>Neighborhood Walkabouts - Get GPS Coordinates</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -18,17 +18,30 @@
     .navbutton {
         margin-right: 0.5vw;
     }
-</style>
-<style>
-    /* Main page only. */
-    .intro {
-        font-family: "Delius", inherit;
-        font-size: 1.5em;
-        margin-left: 1vw;
+    .controls {
         margin-top: 0.75vw;
-        color: var(--dark);
+        margin-left: 1vw;
+    }
+    button {
+        margin-right: 0.5vw;
     }
 </style>
+<script>
+    function addNewToCookie() {
+        var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)coordinates\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        navigator.geolocation.getCurrentPosition(function(position) {cookieValue += position.coords.latitude+","+position.coords.longitude+"_"; document.cookie="coordinates="+cookieValue});
+    }
+    function retrieveCoords() {
+        var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)coordinates\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        cookieValue = cookieValue.replace(/_/g,"\n");
+        document.getElementById("coords").value = cookieValue;
+        setTimeout(retrieveCoords, 250);
+    }
+    function clearCoords() {
+        document.cookie = "coordinates=;"
+    }
+    $(document).ready(retrieveCoords);
+</script>
 <nav class="navbar navbar-expand-lg navbargrn navbar-light">
   <a class="navbar-brand" href="#">Neighborhood Walkabouts</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +51,7 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="btn btn-outline-dark navbutton active" href="/index.html">Home <span class="sr-only">(current)</span></a>
+        <a class="btn btn-outline-dark navbutton" href="/index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
         <a class="btn btn-outline-dark navbutton" href="/about.html">About & FAQ</a>
@@ -50,13 +63,16 @@
         <a class="btn btn-outline-dark navbutton" href="/generator.html">Create A Walkabout</a>
       </li>
       <li class="nav-item">
-        <a class="btn btn-outline-dark navbutton" href="/coordinates.html">Get GPS Coordinates</a>
+        <a class="btn btn-outline-dark navbutton active" href="/coordinates.html">Get GPS Coordinates</a>
       </li>
     </ul>
   </div>
 </nav>
-<p class="text-left intro">A Neighborhood Walkabout is a set of pictures of new and exciting places in your neighborhood that you have to find. 
-    Neighborhood Walkabouts are a good way to get outside while having fun. They were created by Ben Goldberg, Jocelyn Glazier, and Steve Goldberg in response to the 2019/2020 COVID-19 outbreak in an attempt to help get people outside.
-    People create Neighborhood Walkabouts and send them to an email address, where we add them to the crowdsourced map. You can create your own using the "Create A Walkabout" tab above.
-    Neighborhood Walkabouts are totally free and the code for this website is open source. We hope you have fun walking about your neighborhood! &#x1F333;</p>
-</body>
+<div class="controls">
+    <button type="button" class="btn btn-lg btn-primary" onclick="addNewToCookie()">Save Coordinates</button>
+    <button type="button" class="btn btn-lg btn-primary" onclick="clearCoords()">Clear Coordinates</button>
+    <textarea id="coords" cols="30" rows="15" readonly>
+
+    </textarea>
+    <p>This webpage stores a list of GPS coordinates which you can paste into the Neighborhood Walkabout creation tab. Click "Save Coordinates" to save your current location.</p>
+</div>
