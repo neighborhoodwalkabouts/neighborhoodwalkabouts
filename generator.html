@@ -1,0 +1,250 @@
+<title>Neighborhood Walkabouts - Create a Walkabout</title>
+<!--
+    Difficulty Parameters:
+    Toddling: Total 0-0.75 miles, easy landmarks
+    Walking: Total 0.75-1.75 miles, easy/medium landmarks
+    Journeying: Total 1.75+ miles or hard landmarks, easy/medium/hard landmarks
+-->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<style>
+    .navbargrn {
+        background: linear-gradient(left, lime, limegreen);
+        background: -webkit-linear-gradient(left, lime, limegreen);
+        background: -moz-linear-gradient(left, lime, limegreen);
+        background: -o-linear-gradient(left, lime, limegreen);
+        border-bottom-left-radius: 0.75vw;
+        border-bottom-right-radius: 0.75vw;
+    }
+    .navbar-brand {
+        color: var(--dark);
+    }
+    .navbutton {
+        margin-right: 0.5vw;
+    }
+</style>
+<nav class="navbar navbar-expand-lg navbargrn">
+    <a class="navbar-brand" href="#">Neighborhood Walkabouts</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="btn btn-outline-dark navbutton" href="/index.html">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-outline-dark navbutton" href="/about.html">About & FAQ</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-outline-dark navbutton" href="https://drive.google.com/open?id=1-urwXnlxWYZ_vJIaeqbHCAzKDjmujx-3&usp=sharing" target="_blank" rel="noreferrer">Map</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-outline-dark navbutton" href="/generator.html">Create A Walkabout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+<div class="generator">
+<link href="https://fonts.googleapis.com/css2?family=Delius&display=swap" rel="stylesheet">
+<span>Enter title, author, difficulty, GPS coordinates for all points. You can have up to 12 points, each one with an image. Paste the page that appears when you click "Show Page" into a Google Doc. Then, add images below the text that says "Images: " inside the Google Doc. Finally, share the finished Google Doc with neighborhoodwalkabouts@gmail.com.</span>
+<br><br><span>Title: </span>
+<input type="text" id="title"><br><br>
+<span>Author: </span>
+<input type="text" id="author"><br><br>
+<span>Are the images easy or hard to find? This helps us calculate the difficulty rating.</span>
+<input type="radio" id="easy" name="diff" value="easy" onclick="radiochecked()">
+<label for="easy">Easy (<a href="#" data-toggle="tooltip" title="" data-original-title="Easy for a 7 year old to find">Toddling</a>)</label><span> </span>
+<input type="radio" id="medium" name="diff" value="medium" onclick="radiochecked()">
+<label for="medium">Medium (<a href="#" data-toggle="tooltip" title="" data-original-title="Somewhat easy for most people/average">Walking</a>)</label><span> </span>
+<input type="radio" id="hard" name="diff" value="hard" onclick="radiochecked()">
+<label for="hard">Hard (<a href="#" data-toggle="tooltip" title="" data-original-title="Pretty hard to find!">Journeying</a>)</label><span> </span><br><br>
+<!--<button type="button" onclick="radiochecked()">Submit Difficulty</button><br>-->
+<span>GPS coordinates for all points (seperate coordinates with newlines): </span>
+<textarea id="coords" placeholder="Latitude1(ex: 36.0013123),Longitude1(ex: -78.9463123)                                                                 Latitude2(ex: 36.1012593),Longitude2(ex: -78.5782931)" cols="57" rows="10"></textarea><br>
+<button class="btn btn-primary" type="button" onclick="allCompleted()">Show Page</button>
+</div>
+<style>
+    .generator {
+        margin-left: 1.5vw;
+        margin-top: 1.5vw;
+    }
+    #container {
+        font-family: "Delius", sans-serif;
+        font-size: 14pt;
+        font-weight: normal;
+    }
+</style>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+    function distance(lat1, lon1, lat2, lon2) {
+        var p = 0.017453292519943295;    // Math.PI / 180
+        var c = Math.cos;
+        var a = 0.5 - c((lat2 - lat1) * p)/2 + 
+                c(lat1 * p) * c(lat2 * p) * 
+                (1 - c((lon2 - lon1) * p))/2;
+
+        return 3958.8*2 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+    }
+    function parseLatsAndLons(string) {
+        lats = []
+        lons = []
+        splot1 = string.split("\n")
+        for (var i = 0; i < splot1.length; i++) {
+            splot = string.split("\n")[i].split(",")
+            lats.push(parseFloat(splot[0]))
+            lons.push(parseFloat(splot[1]))
+        }
+        return [lats, lons]
+    }
+    function distanceBetweenMany(lats, lons) {
+        distances = []
+        for (var i = 0; i < lats.length-1; i++) {
+            distances.push(distance(lats[i], lons[i], lats[i+1], lons[i+1]))
+        }
+        greatest = 0
+        total = 0
+        for (var i = 0; i < distances.length; i++) {
+            if (distances[i] > greatest) {
+                greatest = distances[i];
+            }
+            total += distances[i];
+        }
+        avg = total/distances.length;
+        return [greatest.toFixed(3)+" miles", total.toFixed(3)+" miles", avg.toFixed(3)+" miles"]
+    }
+    function decimalToDDMMM(lat, lon) {
+        ddmmm = ""
+        if (lat >= 0) {
+            ddmmm += "N "
+        } else {
+            ddmmm += "S "
+            lat = Math.abs(lat)
+        }
+        ddmmm += Math.floor(lat).toString()+"&deg; ";
+        ddmmm += ((lat - Math.floor(lat))*60).toFixed(3);
+        ddmmm += " ";
+        if (lon >= 0) {
+            ddmmm += "E "
+        } else {
+            ddmmm += "W "
+            lon = Math.abs(lon)
+        }
+        ddmmm += Math.floor(lon).toString()+"&deg; ";
+        ddmmm += ((lon - Math.floor(lon))*60).toFixed(3);
+        return ddmmm;
+    }
+    function calculateDiff() {
+        window.totalMi = parseFloat(window.total);
+        console.log(window.totalMi)
+        console.log(window.diff);
+        if (window.totalMi <= 0.75 && window.diff == "easy") {
+            return "Toddling Walkabout";
+        }
+        if (window.totalMi > 1.75 || window.diff == "hard") {
+            return "Journeying Walkabout";
+        }
+        if (window.totalMi > 0.75 || window.diff == "medium" && window.diff != "hard") {
+            return "Walking Walkabout";
+        }
+    }
+    function allCompleted() {
+        try {
+            grtoav = distanceBetweenMany(window.a, window.b);
+            window.greatest = grtoav[0];
+            window.total = grtoav[1];
+            window.average = grtoav[2];
+        } catch {
+            alert("Please insert coordinates.")
+            return
+        }
+        if (window.author1 == undefined) {
+            alert("Please insert author.")
+            return
+        }
+        if (window.diff == undefined) {
+            alert("Please select a difficulty.")
+            return
+        }
+        if (window.title1 == undefined) {
+            window.title1 = "Untitled"
+        }
+        window.startingLocationDec = window.a[0].toString()+","+window.b[0].toString()
+        window.startingLocationDDMM = decimalToDDMMM(window.a[0], window.b[0])
+        window.difficulty = calculateDiff();
+        try {
+            document.getElementById("container").outerHTML = "";
+        } catch {
+
+        }
+        var container = document.createElement("div");
+        container.id="container";
+        container.innerHTML += '<link href="https://fonts.googleapis.com/css2?family=Delius&display=swap" rel="stylesheet">'
+        var title = document.createElement("h1");
+        title.innerHTML = window.title1+" ("+window.difficulty+")";
+        title.style.textAlign = "center";
+        title.style.fontSize = "24pt";
+        title.style.fontWeight = "bold";
+        title.style.fontFamily = "'Delius'";
+        container.appendChild(title);
+        var author = document.createElement("span");
+        author.innerHTML = "By "+window.author1+"<br><br>";
+        author.style.fontFamily = "'Delius'";
+        author.style.fontWeight = "normal";
+        container.appendChild(author);
+        var distance = document.createElement("span");
+        distance.innerHTML = "Distance: "+window.total+"<br><br>";
+        distance.style.fontFamily = "'Delius'";
+        distance.style.fontWeight = "normal";
+        container.appendChild(distance);
+        var average = document.createElement("span");
+        average.innerHTML = "Average distance between point to point: "+window.average+"<br><br>";
+        average.style.fontFamily = "'Delius'";
+        container.appendChild(average);
+        var greatest = document.createElement("span");
+        greatest.innerHTML = "Greatest distance between point to point: "+window.greatest+"<br><br>";
+        greatest.style.fontFamily = "'Delius'";
+        container.appendChild(greatest);
+        var starting = document.createElement("span");
+        starting.innerHTML = "Starting Location: "+window.startingLocationDec+" or "+window.startingLocationDDMM +"<br><br>";
+        starting.style.fontFamily = "'Delius'";
+        container.appendChild(starting);
+        var imageslabel = document.createElement("span");
+        imageslabel.innerHTML = "Images:<br>";
+        imageslabel.style.fontFamily = "'Delius'";
+        container.appendChild(imageslabel);
+        document.body.appendChild(container);
+    }
+    function radiochecked() {
+        var radios = document.getElementsByName('diff');
+
+        for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                // do whatever you want with the checked radio
+                window.diff = radios[i].value;
+
+                // only one radio can be logically checked, don't check the rest
+                break;
+            }
+        }
+    }
+    document.getElementById("title").onchange = function(event) {
+        window.title1 = document.getElementById("title").value;
+    }
+    document.getElementById("author").onchange = function(event) {
+        window.author1 = document.getElementById("author").value;
+    }
+    document.getElementById("coords").onchange = function(event) {
+        var v = document.getElementById("coords").value;
+        v = v.replace(/\n+$/, "")
+        q = parseLatsAndLons(v);
+        window.a = q[0];
+        window.b = q[1];
+    }
+</script>
+
